@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		1C0F07311E587BAB009F1D47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0F07301E587BAB009F1D47 /* AppDelegate.swift */; };
-		1C0F07331E587BAB009F1D47 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0F07321E587BAB009F1D47 /* ViewController.swift */; };
-		1C0F07361E587BAB009F1D47 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C0F07341E587BAB009F1D47 /* Main.storyboard */; };
-		1C0F07381E587BAB009F1D47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C0F07371E587BAB009F1D47 /* Assets.xcassets */; };
 		1C0F073B1E587BAB009F1D47 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C0F07391E587BAB009F1D47 /* LaunchScreen.storyboard */; };
+		1C2A6E571E58830500B53302 /* Authenticate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2A6E561E58830500B53302 /* Authenticate.swift */; };
+		1C2A6E591E58838300B53302 /* Constants+enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2A6E581E58838300B53302 /* Constants+enums.swift */; };
+		1C2A6E5B1E5885E100B53302 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2A6E5A1E5885E100B53302 /* Model.swift */; };
+		D9B9A70DCC7F8339C27EA5D5 /* Pods_PermissionChangeDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81AAB5E0691EC5CB83994BB7 /* Pods_PermissionChangeDemo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1C0F072D1E587BAB009F1D47 /* PermissionChangeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PermissionChangeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C0F07301E587BAB009F1D47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1C0F07321E587BAB009F1D47 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		1C0F07351E587BAB009F1D47 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		1C0F07371E587BAB009F1D47 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1C0F073A1E587BAB009F1D47 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C0F073C1E587BAB009F1D47 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C2A6E561E58830500B53302 /* Authenticate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authenticate.swift; sourceTree = "<group>"; };
+		1C2A6E581E58838300B53302 /* Constants+enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Constants+enums.swift"; sourceTree = "<group>"; };
+		1C2A6E5A1E5885E100B53302 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		35787619BC1281063AFCF018 /* Pods-PermissionChangeDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PermissionChangeDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-PermissionChangeDemo/Pods-PermissionChangeDemo.release.xcconfig"; sourceTree = "<group>"; };
+		81AAB5E0691EC5CB83994BB7 /* Pods_PermissionChangeDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PermissionChangeDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9F4492029294ADF4104C7F58 /* Pods-PermissionChangeDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PermissionChangeDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PermissionChangeDemo/Pods-PermissionChangeDemo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9B9A70DCC7F8339C27EA5D5 /* Pods_PermissionChangeDemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +45,8 @@
 			children = (
 				1C0F072F1E587BAB009F1D47 /* PermissionChangeDemo */,
 				1C0F072E1E587BAB009F1D47 /* Products */,
+				D1BF988CBC711EF0D905CBD3 /* Pods */,
+				6A1EABD762B21D24F527E268 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,13 +62,30 @@
 			isa = PBXGroup;
 			children = (
 				1C0F07301E587BAB009F1D47 /* AppDelegate.swift */,
-				1C0F07321E587BAB009F1D47 /* ViewController.swift */,
-				1C0F07341E587BAB009F1D47 /* Main.storyboard */,
-				1C0F07371E587BAB009F1D47 /* Assets.xcassets */,
+				1C2A6E561E58830500B53302 /* Authenticate.swift */,
+				1C2A6E581E58838300B53302 /* Constants+enums.swift */,
+				1C2A6E5A1E5885E100B53302 /* Model.swift */,
 				1C0F07391E587BAB009F1D47 /* LaunchScreen.storyboard */,
 				1C0F073C1E587BAB009F1D47 /* Info.plist */,
 			);
 			path = PermissionChangeDemo;
+			sourceTree = "<group>";
+		};
+		6A1EABD762B21D24F527E268 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				81AAB5E0691EC5CB83994BB7 /* Pods_PermissionChangeDemo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D1BF988CBC711EF0D905CBD3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9F4492029294ADF4104C7F58 /* Pods-PermissionChangeDemo.debug.xcconfig */,
+				35787619BC1281063AFCF018 /* Pods-PermissionChangeDemo.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +95,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C0F073F1E587BAB009F1D47 /* Build configuration list for PBXNativeTarget "PermissionChangeDemo" */;
 			buildPhases = (
+				788D271C8FA0122556FDC4A3 /* [CP] Check Pods Manifest.lock */,
 				1C0F07291E587BAB009F1D47 /* Sources */,
 				1C0F072A1E587BAB009F1D47 /* Frameworks */,
 				1C0F072B1E587BAB009F1D47 /* Resources */,
+				FF926CF8D5009A05A24A11E7 /* [CP] Embed Pods Frameworks */,
+				58E6642074F88B960B5245FB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -125,34 +152,74 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C0F073B1E587BAB009F1D47 /* LaunchScreen.storyboard in Resources */,
-				1C0F07381E587BAB009F1D47 /* Assets.xcassets in Resources */,
-				1C0F07361E587BAB009F1D47 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		58E6642074F88B960B5245FB /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PermissionChangeDemo/Pods-PermissionChangeDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		788D271C8FA0122556FDC4A3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FF926CF8D5009A05A24A11E7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PermissionChangeDemo/Pods-PermissionChangeDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1C0F07291E587BAB009F1D47 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C0F07331E587BAB009F1D47 /* ViewController.swift in Sources */,
+				1C2A6E5B1E5885E100B53302 /* Model.swift in Sources */,
+				1C2A6E591E58838300B53302 /* Constants+enums.swift in Sources */,
 				1C0F07311E587BAB009F1D47 /* AppDelegate.swift in Sources */,
+				1C2A6E571E58830500B53302 /* Authenticate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		1C0F07341E587BAB009F1D47 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1C0F07351E587BAB009F1D47 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		1C0F07391E587BAB009F1D47 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -259,12 +326,13 @@
 		};
 		1C0F07401E587BAB009F1D47 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9F4492029294ADF4104C7F58 /* Pods-PermissionChangeDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = J32ECBVW56;
 				INFOPLIST_FILE = PermissionChangeDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.meal2day.PermissionChangeDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PermissionChangeDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -272,12 +340,13 @@
 		};
 		1C0F07411E587BAB009F1D47 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35787619BC1281063AFCF018 /* Pods-PermissionChangeDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = J32ECBVW56;
 				INFOPLIST_FILE = PermissionChangeDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.meal2day.PermissionChangeDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PermissionChangeDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -302,6 +371,7 @@
 				1C0F07411E587BAB009F1D47 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
