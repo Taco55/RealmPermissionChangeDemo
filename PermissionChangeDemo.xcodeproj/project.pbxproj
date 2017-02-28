@@ -12,6 +12,7 @@
 		1C2A6E571E58830500B53302 /* Authenticate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2A6E561E58830500B53302 /* Authenticate.swift */; };
 		1C2A6E591E58838300B53302 /* Constants+enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2A6E581E58838300B53302 /* Constants+enums.swift */; };
 		1C2A6E5B1E5885E100B53302 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2A6E5A1E5885E100B53302 /* Model.swift */; };
+		1C6784EE1E659E01003F64FF /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 1C6784ED1E659E01003F64FF /* Podfile */; };
 		D9B9A70DCC7F8339C27EA5D5 /* Pods_PermissionChangeDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81AAB5E0691EC5CB83994BB7 /* Pods_PermissionChangeDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,7 @@
 		1C2A6E561E58830500B53302 /* Authenticate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authenticate.swift; sourceTree = "<group>"; };
 		1C2A6E581E58838300B53302 /* Constants+enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Constants+enums.swift"; sourceTree = "<group>"; };
 		1C2A6E5A1E5885E100B53302 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		1C6784ED1E659E01003F64FF /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; };
 		35787619BC1281063AFCF018 /* Pods-PermissionChangeDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PermissionChangeDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-PermissionChangeDemo/Pods-PermissionChangeDemo.release.xcconfig"; sourceTree = "<group>"; };
 		81AAB5E0691EC5CB83994BB7 /* Pods_PermissionChangeDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PermissionChangeDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F4492029294ADF4104C7F58 /* Pods-PermissionChangeDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PermissionChangeDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PermissionChangeDemo/Pods-PermissionChangeDemo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				1C2A6E5A1E5885E100B53302 /* Model.swift */,
 				1C0F07391E587BAB009F1D47 /* LaunchScreen.storyboard */,
 				1C0F073C1E587BAB009F1D47 /* Info.plist */,
+				1C6784ED1E659E01003F64FF /* Podfile */,
 			);
 			path = PermissionChangeDemo;
 			sourceTree = "<group>";
@@ -151,6 +154,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C6784EE1E659E01003F64FF /* Podfile in Resources */,
 				1C0F073B1E587BAB009F1D47 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

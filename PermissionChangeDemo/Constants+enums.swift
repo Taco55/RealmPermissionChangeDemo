@@ -18,10 +18,15 @@ struct HostConstants {
 
 public enum AppError: Error, CustomStringConvertible {
     case serverError(description: String)
+    case syncPermissionOfferError(description: String)
+    case userAlreadyCreated(description: String)
     
     public var description: String {
         switch self {
         case .serverError(let description): return "Server error: \(description)"
+        case .userAlreadyCreated(let description): return "User is already created: \(description)"
+
+        case .syncPermissionOfferError(let description): return "SyncPermissionOffer error: \(description)"
         }
     }
     

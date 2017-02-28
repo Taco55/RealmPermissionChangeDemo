@@ -49,39 +49,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Determine whether user should be logged in or registered
         print(String(format: "%@ user 1 \n%@ user 2", user1created ? "Login" : "Register", user2created ? "Login" : "Register"))
-
+        
         Authenticate.authenticate(with: user1, register: !user1created) { error in
             guard error == nil else {
-                print(error!);
-                print("This demo app assumed empty UserDefaults and empty Realm Object Server. Probably users were already registered.")
-                print("Status of users is updated in UserDefaults. Please run app again.")
-                self.user1created = true; self.user2created = true
+                if case AppError.userAlreadyCreated(_) = error! {
+                    print("Error: this demo app assumes empty UserDefaults and an empty Realm Object Server at start. Probably users were already registered.")
+                    print("Please empty UserDefaults/remove app and reset Realm ObjectServer and compile app again.")
+                } else {
+                    print(error!);
+                }
                 return
             }
             
             self.user1created = true
-            print("\n User1 logged in")
             
             //
             // Share Realm of user1 with user2
             //
             
             // Create Token
-            Authenticate.shareUsersDefaultRealm() { result in
-                guard let token = result else {  print("/n Error creating token"); return }
+            Authenticate.shareUsersDefaultRealm() { (token, error) in
+                guard let token = token else {  print("\n****\n\(error!)\n****\n"); return }
 
                 // Logout user1 so that user2 is able to accept the PermissionOffer token
                 SyncUser.current!.logOut()
                 
                 // Authenticate with user2 and generate PermissionOfferResponse using token
                 Authenticate.authenticate(with: self.user2, register: !self.user2created) { error in
-                    guard error == nil else { print(error!); return }
+                    guard error == nil else { print("\n****\n\(error!)\n****\n"); return }
 
                     self.user2created = true
-                    print("\n User2 logged in")
-                    print("\n Current Sync User: \(SyncUser.current!)\n")
 
-                    
                     Authenticate.acceptShareToken(token, forUser: SyncUser.current!) { sharedRealmURL in
                         
                         if let sharedRealmURL = sharedRealmURL {
@@ -94,19 +92,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             }
                             
                             // Do something with shared data
-                            print("\n------------------------------")
-                            print("Open shared Realm of user1 with the path that is stored in Realm of user2 (this url is similar to the generated url by PermissionOfferResponse):")
+                            print("\n****\nOpen shared Realm of user1 with the path that is stored in Realm of user2 (this url is similar to the generated url by PermissionOfferResponse):")
                             print(self.currentUser!.realmUrl!)
-                            print("\nIt appears that this only works when a PermissionOffereResponse is processed once. The second time a PermissionOffferResponse is processed an assertion error occurs. Why?????")
-                            print("\n------------------------------")
+                            print("\nIt appears that this only works when a PermissionOffereResponse is processed once. The second time a PermissionOffferResponse is processed an assertion error occurs. Why?????\n****\n")
                             let sharedRealm = try! Realm(configuration: self.currentUser!.sharedRealmConfiguration!)
 
-                            print("\n------------------------------")
-                            print("Retrieve dogs of user1:")
+                            print("\n****\nRetrieve dogs of user1:")
                             let sharedDogs = sharedRealm.objects(Dog.self)
                             print("Number of dogs: \(sharedDogs.count)")
-                            print("\nWhy is number of dogs zero???")
-                            print("\n------------------------------")
+                            print("\nWhy is number of dogs zero???\n****\n")
                         } else {
                             print("Sharing data did not succeed")
                         }

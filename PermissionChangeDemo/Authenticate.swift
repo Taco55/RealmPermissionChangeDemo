@@ -23,35 +23,39 @@ class Authenticate {
 
     static var realm: Realm { return try! Realm() }
     static var notificationToken: NotificationToken!
-    static var userNotificationToken: NotificationToken!
+    static var dogNotificationToken: NotificationToken!
     static var shareOfferNotificationToken: NotificationToken!
     static var shareResponseNotificationToken: NotificationToken!
 
     class func authenticate(with credentials: Credentials, register: Bool, completionHandler: @escaping (AppError?) -> Void)->Void {
         
         SyncUser.logIn(with: SyncCredentials.usernamePassword(username: credentials.username, password: credentials.password, register: register), server: HostConstants.syncAuthURL) { realmUser, error in
-            
+
             if let error = error as? NSError {
-                completionHandler(AppError.serverError(description: error.localizedDescription))
+                if error.code == 611 {
+                    completionHandler(AppError.userAlreadyCreated(description: error.localizedDescription))
+                } else {
+                    completionHandler(AppError.serverError(description: error.localizedDescription))
+                }
                 return
             }
             
             DispatchQueue.main.async {
-                guard let realmUser = realmUser else {
-                    fatalError(String(describing: error))
-                }
+                guard let realmUser = realmUser else { fatalError(String(describing: error)) }
                 
                 // Set new Realm for logged in User
                 self.setRealm(for: realmUser)
                 
                 // Seed database for new user
                 if register {
-                    print("New user \(credentials.username) registered: seed new database with data")
+                    print("\nNew user \(credentials.username) registered: seed new database with data (i.e. a single dog is added for this example)")
                     
+                    // Create user
                     let user = User()
                     user.username = credentials.username
                     user.email = credentials.email
                     
+                    // Add dog and link to current user
                     let dog = Dog()
                     dog.name = String(format: "%@_dog",credentials.username)
                     dog.owner = user
@@ -82,20 +86,20 @@ class Authenticate {
         )
         Realm.Configuration.defaultConfiguration = configuration
         
-        self.userNotificationToken = self.realm.objects(Dog.self).addNotificationBlock { _ in
-            // Update user info
-            print("UI should be updated with new dogs")
+        self.dogNotificationToken = self.realm.objects(Dog.self).addNotificationBlock { _ in
+            let dogs = self.realm.objects(Dog.self)
+            print("\ndogNotificationToken triggered for changes in dog. Dog count for user is: \(dogs.count)\n")
         }
     }
     
     deinit {
         Authenticate.notificationToken.stop()
-        Authenticate.userNotificationToken.stop()
+        Authenticate.dogNotificationToken.stop()
         Authenticate.shareOfferNotificationToken.stop()
         Authenticate.shareResponseNotificationToken.stop()
     }
     
-    class func shareUsersDefaultRealm(completionHandler: @escaping (String?) -> Void)->Void {
+    class func shareUsersDefaultRealm(completionHandler: @escaping (String?, AppError?) -> Void)->Void {
         let syncConfig = Realm.Configuration.defaultConfiguration.syncConfiguration!
         let shareOffer = SyncPermissionOffer(realmURL: syncConfig.realmURL.absoluteString, expiresAt: nil, mayRead: true, mayWrite: true, mayManage: false)
         
@@ -103,18 +107,17 @@ class Authenticate {
         let managementRealm = try! syncConfig.user.managementRealm()
         try! managementRealm.write { managementRealm.add(shareOffer) }
         
-        print("\nShare token, ID: \(shareOffer.id)\n")
+        print("\nShare offer ID: \(shareOffer.id)\n")
  
         let offerResults = managementRealm.objects(SyncPermissionOffer.self).filter("id = %@", shareOffer.id)
         self.shareOfferNotificationToken = offerResults.addNotificationBlock { changes in
             guard case let offer = offerResults.first,
                 offer?.status == .success,
                 let token = offer?.token else {
-                    return
-            }
+                    completionHandler(nil, AppError.syncPermissionOfferError(description: "no token generated")); return }
             
-            print("PermissionOffer generated a token: \(token)")
-            completionHandler(token)
+            print("\nPermissionOffer generated a token: \(token)\n")
+            completionHandler(token, nil)
         }
     }
 
@@ -134,26 +137,10 @@ class Authenticate {
                 let realmURL = response?.realmUrl else {
                     return
             }
-
             print("\nPermissionOfferResponse successful and generated realm URL: \(realmURL)\n")
             
             completionHandler(realmURL)
         }
     }
-    
-    class func printUserInfo() {
-        let syncConfig = Realm.Configuration.defaultConfiguration.syncConfiguration!
-        let managementRealm = try! syncConfig.user.managementRealm()
-        
-        print("\n-------------------------------")
-        print("User info")
-        print("ID of current SyncUser: \(SyncUser.current?.identity ?? "no Realm")")
-        print("Default Realm: \(syncConfig.realmURL.absoluteString)")
-        print("User management Realm: \(managementRealm.configuration.syncConfiguration?.realmURL.absoluteString ?? "no Realm")")
-        print("-------------------------------\n")
-    }
-    
-    
-    
 }
 
