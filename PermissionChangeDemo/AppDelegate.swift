@@ -6,18 +6,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    // Define some arbitrary test users
+    // Define some arbitrary test users that are used to share data between each other
     let user1 = Credentials(username: "user1", password: "user1", email: "user1@123.nl")
     let user2 = Credentials(username: "user2", password: "user2", email: "user2@123.nl")
     
     var currentUser: User? {
-        return (try! Realm()).objects(User.self).first
+        return (try! Realm()).objects(User.self).first // Only one User object exists per user's Realm
     }
     
-    //
-    // Indicate whether a user has already been registered. 
-    // This is only used to illustrate the issue with changing permissions, and assumes that the app is started with empty UserDefaults and an empty Realm Object Server.
-    //
+    // To be able to test the SyncPermissionOffer and response in a single run, the register status of user1 and user2 are stored in UserDefaults. 
+    // UserDefaults are used since it is not (yet) possible to determine whether a user is already registered using the ROS API.
+    // The values in UserDefaults, however, are only correct when the first run of the app starts with empty UserDefaults and user1 and user2 have not yet been created in ROS
     var user1created: Bool {
         get {
             return UserDefaults.standard.bool(forKey: "user1Available")
@@ -36,84 +35,137 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-
+    // NoticationTokens
+    var shareOfferNotificationToken: NotificationToken!
+    var shareResponseNotificationToken: NotificationToken!
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
         self.window?.rootViewController = UIViewController()
         self.window?.makeKeyAndVisible()
         
-        // If user was already logged in, logout
+        // If a user was already logged in, it will be loged out
         if let realmUser = SyncUser.current {
             realmUser.logOut()
         }
 
-        // Determine whether user should be logged in or registered
+        // Based on the UserDefaults a user will be logged in or registered
         print(String(format: "%@ user 1 \n%@ user 2", user1created ? "Login" : "Register", user2created ? "Login" : "Register"))
+        
+        //
+        // Authenticate user1
+        //
         
         Authenticate.authenticate(with: user1, register: !user1created) { error in
             guard error == nil else {
                 if case AppError.userAlreadyCreated(_) = error! {
-                    print("Error: this demo app assumes empty UserDefaults and an empty Realm Object Server at start. Probably users were already registered.")
-                    print("Please empty UserDefaults/remove app and reset Realm ObjectServer and compile app again.")
+                    print("Error: this demo app assumes empty UserDefaults and an empty Realm Object Server at start. Probably user1 and or user2 were already registered.")
+                    print("Please empty UserDefaults/remove app and remove user1 and/or user2 from Realm ObjectServer.")
                 } else {
                     print(error!);
                 }
                 return
             }
-            
             self.user1created = true
             
             //
             // Share Realm of user1 with user2
             //
             
-            // Create Token
-            Authenticate.shareUsersDefaultRealm() { (token, error) in
-                guard let token = token else {  print("\n****\n\(error!)\n****\n"); return }
-
-                // Logout user1 so that user2 is able to accept the PermissionOffer token
-                SyncUser.current!.logOut()
+            // Create share token from user1
+            let syncConfig = Realm.Configuration.defaultConfiguration.syncConfiguration!
+            let shareOffer = SyncPermissionOffer(realmURL: syncConfig.realmURL.absoluteString, expiresAt: nil, mayRead: true, mayWrite: true, mayManage: false)
+            
+            // Save PermissionOffer to user's management Realm
+            let managementRealm = try! syncConfig.user.managementRealm()
+            try! managementRealm.write { managementRealm.add(shareOffer) }
+            
+            print("\nShare offer ID: \(shareOffer.id)\n")
+            
+            let offerResults = managementRealm.objects(SyncPermissionOffer.self).filter("id = %@", shareOffer.id)
+            self.shareOfferNotificationToken = offerResults.addNotificationBlock { changes in
+                guard case let offer = offerResults.first,
+                    offer?.status == .success,
+                    let token = offer?.token else { print("Error creating token"); return }
                 
-                // Authenticate with user2 and generate PermissionOfferResponse using token
+                // Normally, this token should be shared using e-mail or other method
+                print("\nPermissionOffer generated a token: \(token)\n")
+                print("This token will be shared with user2")
+
+                SyncUser.current!.logOut() // Logout user1 so that user2 is able to accept the PermissionOffer token
+                
+                //
+                // Authenticate user2
+                //
+                
                 Authenticate.authenticate(with: self.user2, register: !self.user2created) { error in
-                    guard error == nil else { print("\n****\n\(error!)\n****\n"); return }
-
+                    guard error == nil else { print("\n\(error!)\n"); return }
                     self.user2created = true
-
-                    Authenticate.acceptShareToken(token, forUser: SyncUser.current!) { sharedRealmURL in
+                    
+                    //
+                    // Process token generated by SyncPermissionOffer of user1
+                    //
+                    
+                    let managementRealm = try! SyncUser.current!.managementRealm()
+                    let response = SyncPermissionOfferResponse(token: token) //Save PermissionOfferResponse to management Realm of user2
+                    
+                    try! managementRealm.write { managementRealm.add(response) }
+                    
+                    // Wait for server to process
+                    let responseResults = managementRealm.objects(SyncPermissionOfferResponse.self).filter("id = %@", response.id)
+                    self.shareResponseNotificationToken = responseResults.addNotificationBlock { changes in // acceptShareNotificationToken
                         
-                        if let sharedRealmURL = sharedRealmURL {
-                        
-                            let components = sharedRealmURL.components(separatedBy: "/")
-                            let userIdToShareWith = components[3]
-                            
-                            try! Realm().write {
-                                self.currentUser!.sharedServerPath = userIdToShareWith
-                            }
-                            
-                            // Do something with shared data
-                            print("\n****\nOpen shared Realm of user1 with the path that is stored in Realm of user2 (this url is similar to the generated url by PermissionOfferResponse):")
-                            print(self.currentUser!.realmUrl!)
-                            print("\nIt appears that this only works when a PermissionOffereResponse is processed once. The second time a PermissionOffferResponse is processed an assertion error occurs. Why?????\n****\n")
-                            let sharedRealm = try! Realm(configuration: self.currentUser!.sharedRealmConfiguration!)
-
-                            print("\n****\nRetrieve dogs of user1:")
-                            let sharedDogs = sharedRealm.objects(Dog.self)
-                            print("Number of dogs: \(sharedDogs.count)")
-                            print("\nWhy is number of dogs zero???\n****\n")
-                        } else {
-                            print("Sharing data did not succeed")
+                        guard case let response = responseResults.first,
+                            response?.status == .success,
+                            let sharedRealmURL = response?.realmUrl else {
+                                return
                         }
+                        
+                        print("\nPermissionOfferResponse successful and generated realm URL:")
+                        print(sharedRealmURL)
+                        
+                        //
+                        // Save share server path (i.e. user ID of shared Realm owner) in custom User object
+                        //
+                        let components = sharedRealmURL.components(separatedBy: "/")
+                        try! Realm().write {
+                            self.currentUser!.sharedServerPath = components[3]
+                        }
+                        
+                        // Shared realm url that is stored in cursom User object should be the same as the one that is provided by SyncPermissionOfferResponse
+                        guard sharedRealmURL == self.currentUser!.realmUrl!.absoluteString else { fatalError() }
+                        
+                        //
+                        // Open shared Realm
+                        //
+                        print("\nIt appears that a shared realm can be opened when a PermissionOffereResponse for this Realm has been processed once. When a new PermissionOffereResponse has been added to the user's management Realm, an assertion error occurs: ")
+                        
+                        ////////////////////////////////////////////////////////////////////////////
+                        //
+                        // PROBLEM HERE:
+                        // It appears that a shared realm can be opened when a PermissionOffereResponse for this Realm has been processed once. When a new PermissionOffereResponse has been added to the user's management Realm, an assertion error occurs at the statement below
+                        //
+                        ////////////////////////////////////////////////////////////////////////////
+                        
+                        let sharedRealm = try! Realm(configuration: self.currentUser!.sharedRealmConfiguration!)
+                        
+                        ////////////////////////////////////////////////////////////////////////////
+                        //
+                        // PROBLEM HERE:
+                        // When a succesfully shared realm path is opened, the corresponding Realm seems to be empty.
+                        // How is that possible????
+                        //
+                        ////////////////////////////////////////////////////////////////////////////
+                        print("\n****\nRetrieve dogs of user1:")
+                        let sharedDogs = sharedRealm.objects(Dog.self)
+                        print("Number of dogs: \(sharedDogs.count)")
+                        print("\nWhy is the shared Realm empty (i.e. the of dogs zero)?????? \n****\n")
+                        
                     }
                 }
             }
         }
         return true
-    }
-
-
-    func shareRealmUser1WithUser2() {
-        
     }
     
     
